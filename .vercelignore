@@ -1,0 +1,8 @@
+# Arquivos que NÃO devem ser enviados para a Vercel.
+# (Com este arquivo presente, a Vercel ignora o .gitignore, então o
+#  prisma/dev.db é enviado normalmente para o preview somente-leitura.)
+node_modules
+.next
+.git
+.env
+.env.local
