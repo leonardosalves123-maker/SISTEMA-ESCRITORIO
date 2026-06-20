@@ -1,0 +1,84 @@
+// Schema do Sistema de Gestão de Escritório de Advocacia
+// Documentação: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// Cliente do escritório (pessoa física ou jurídica)
+model Cliente {
+  id          Int          @id @default(autoincrement())
+  tipo        String       @default("PF") // PF = Pessoa Física, PJ = Pessoa Jurídica
+  nome        String
+  documento   String? // CPF ou CNPJ
+  email       String?
+  telefone    String?
+  endereco    String?
+  observacao  String?
+  criadoEm    DateTime     @default(now())
+  processos   Processo[]
+  lancamentos Lancamento[]
+}
+
+/// Processo / caso jurídico
+model Processo {
+  id             Int           @id @default(autoincrement())
+  numero         String? // número CNJ
+  titulo         String
+  cliente        Cliente       @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  clienteId      Int
+  parteContraria String?
+  area           String? // Cível, Trabalhista, Criminal, etc.
+  comarca        String?
+  vara           String?
+  status         String        @default("ATIVO") // ATIVO, ARQUIVADO, SUSPENSO, ENCERRADO
+  fase           String? // Conhecimento, Recurso, Execução, etc.
+  valorCausa     Float?
+  criadoEm       DateTime      @default(now())
+  andamentos     Andamento[]
+  compromissos   Compromisso[]
+  lancamentos    Lancamento[]
+}
+
+/// Andamento / movimentação de um processo
+model Andamento {
+  id         Int      @id @default(autoincrement())
+  processo   Processo @relation(fields: [processoId], references: [id], onDelete: Cascade)
+  processoId Int
+  data       DateTime @default(now())
+  descricao  String
+}
+
+/// Compromisso da agenda ou prazo processual
+model Compromisso {
+  id          Int       @id @default(autoincrement())
+  titulo      String
+  tipo        String    @default("COMPROMISSO") // COMPROMISSO ou PRAZO
+  data        DateTime
+  processo    Processo? @relation(fields: [processoId], references: [id], onDelete: SetNull)
+  processoId  Int?
+  responsavel String?
+  concluido   Boolean   @default(false)
+  observacao  String?
+  criadoEm    DateTime  @default(now())
+}
+
+/// Lançamento financeiro (honorários, despesas, a receber/pagar)
+model Lancamento {
+  id         Int       @id @default(autoincrement())
+  descricao  String
+  tipo       String    @default("RECEITA") // RECEITA ou DESPESA
+  valor      Float
+  status     String    @default("PENDENTE") // PENDENTE ou PAGO
+  vencimento DateTime?
+  cliente    Cliente?  @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  clienteId  Int?
+  processo   Processo? @relation(fields: [processoId], references: [id], onDelete: SetNull)
+  processoId Int?
+  criadoEm   DateTime  @default(now())
+}
