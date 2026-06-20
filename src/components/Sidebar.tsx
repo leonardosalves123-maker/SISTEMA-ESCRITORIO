@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { sair } from "@/app/login/actions";
 
 const itens = [
   { href: "/", label: "Painel", icon: "📊" },
@@ -11,7 +12,11 @@ const itens = [
   { href: "/financeiro", label: "Financeiro", icon: "💰" },
 ];
 
-export function Sidebar() {
+export function Sidebar({
+  usuario,
+}: {
+  usuario: { nome: string; cargo: string | null };
+}) {
   const pathname = usePathname();
 
   return (
@@ -42,8 +47,21 @@ export function Sidebar() {
           );
         })}
       </nav>
-      <div className="px-6 py-4 border-t border-slate-700 text-xs text-slate-400">
-        v0.1 — Protótipo
+      <div className="px-4 py-4 border-t border-slate-700">
+        <p className="text-sm font-medium text-white truncate px-2">
+          {usuario.nome}
+        </p>
+        <p className="text-xs text-slate-400 px-2 mb-2">
+          {usuario.cargo ?? "Usuário"}
+        </p>
+        <form action={sair}>
+          <button
+            type="submit"
+            className="w-full text-left px-3 py-2 rounded-md text-sm text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+          >
+            ↩ Sair
+          </button>
+        </form>
       </div>
     </aside>
   );

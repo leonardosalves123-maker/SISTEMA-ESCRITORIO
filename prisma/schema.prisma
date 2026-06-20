@@ -11,6 +11,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/// Usuário do sistema (advogado, secretária, etc.)
+model Usuario {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  email     String   @unique
+  senhaHash String
+  cargo     String?  @default("Advogado(a)")
+  criadoEm  DateTime @default(now())
+}
+
 /// Cliente do escritório (pessoa física ou jurídica)
 model Cliente {
   id          Int          @id @default(autoincrement())

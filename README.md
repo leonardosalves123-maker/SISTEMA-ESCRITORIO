@@ -6,6 +6,9 @@ como o AdvBox. Permite gerenciar **clientes**, **processos/casos**,
 
 ## Funcionalidades
 
+- **Login / Autenticação**: acesso protegido por e-mail e senha; todas as telas
+  exigem sessão ativa. Senhas armazenadas com hash (bcrypt) e sessão em cookie
+  assinado (JWT).
 - **Painel**: visão geral com indicadores (clientes, processos ativos, valores a
   receber/pagar) e próximos compromissos/prazos.
 - **Clientes**: cadastro de pessoas físicas e jurídicas, com ficha individual
@@ -44,6 +47,16 @@ npm run dev
 ```
 
 Acesse [http://localhost:3000](http://localhost:3000).
+
+### Acesso de demonstração
+
+Após rodar o seed, use as credenciais:
+
+- **E-mail:** `admin@escritorio.com`
+- **Senha:** `admin123`
+
+> Em produção, defina a variável de ambiente `SESSION_SECRET` (uma string longa
+> e aleatória) para assinar as sessões com segurança.
 
 ## Scripts úteis
 

@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -9,6 +10,17 @@ async function main() {
   await prisma.andamento.deleteMany();
   await prisma.processo.deleteMany();
   await prisma.cliente.deleteMany();
+  await prisma.usuario.deleteMany();
+
+  // Usuário administrador de demonstração
+  await prisma.usuario.create({
+    data: {
+      nome: "Dra. Administradora",
+      email: "admin@escritorio.com",
+      senhaHash: await bcrypt.hash("admin123", 10),
+      cargo: "Sócia",
+    },
+  });
 
   const hoje = new Date();
   const emDias = (d: number) => {
